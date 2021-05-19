@@ -10,6 +10,9 @@ const createSlideshow = function () {
     
     let nodes = { image: null, caption: null };
     let img = { cache: [], counter: 0 };
+
+    let speed = 2000;
+   console.log(speed);
     
     const stopSlideShow = function () {
         clearInterval(timer);
@@ -31,6 +34,8 @@ const createSlideshow = function () {
             btn.value = 'Pause';
         }
     };
+   
+
     // PUBLIC METHODS THAT HAVE ACCESS TO PRIVATE VARIABLES AND FUNCTIONS
     return {
         loadImages: function (slides) {
@@ -48,9 +53,17 @@ const createSlideshow = function () {
                 nodes.image = arguments[0];
                 nodes.caption = arguments[1];
             }
-            timer = setInterval(displayNextImage, 2000);
+            
+            timer = setInterval(displayNextImage, speed);
             return this;
         },
+        setSpeed: function () {
+            let userSpeed = prompt(`The current slideshow speed is: ` + ((speed)/1000)+ ` seconds per slide. \nEnter a whole number to indicate how many seconds you'd like to view each slide.` );
+            speed = (userSpeed * 1000);   
+            console.log(speed);  
+            setInterval(displayNextImage, speed);
+        },
+
         createToggleHandler: function () {
             let me = this;
             // CLOSURE TO BE USED AS THE CLICK EVENT HANDLER
@@ -65,8 +78,10 @@ const createSlideshow = function () {
                 setPlayText(this);
                 // TOGGLE PLAY 'FLAG'
                 play = !play;
+                
             };
-        }
+    
+        }, 
     };
 };
 
@@ -79,10 +94,11 @@ window.addEventListener('load', () => {
         {href: 'images/boat.jpg', title: 'He loves his boat'},
         {href: 'images/camaro.jpg', title: 'He loves his Camaro more'},
         {href: 'images/punk.jpg', title: 'He used to be in a punk band and toured with No Doubt and Sublime'},
-        {href: 'images/race.jpg', title: 'He\'s active and loves obstacle coarse racing'}
+        {href: 'images/race.jpg', title: 'He\'s active and loves obstacle course racing'}
     ];
 	// START THE SLIDESHOW
     slideshow.loadImages(slides).startSlideShow($('image'), $('caption'));
     // PAUSE THE SLIDESHOW
     $('play_pause').onclick = slideshow.createToggleHandler();
+    $('set_speed').onclick = setSpeed();
 });
